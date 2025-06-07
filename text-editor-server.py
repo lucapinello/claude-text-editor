@@ -108,12 +108,8 @@ class TextEditorServer:
                 filename = arguments.get("filename", "output.txt")
                 content = arguments.get("content", "")
                 
-                # Generate output filename with timestamp
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                base_name = filename.rsplit('.', 1)[0]
-                ext = filename.rsplit('.', 1)[1] if '.' in filename else 'txt'
-                output_filename = f"{base_name}_{timestamp}.{ext}"
-                output_path = outbox / output_filename
+                # Use the same filename as input (what client expects)
+                output_path = outbox / filename
                 
                 # Save the file
                 output_path.write_text(content)
@@ -147,7 +143,7 @@ class TextEditorServer:
                     original.unlink()
                     debug_log(f"Removed processed file: {filename}")
                 
-                return [{"type": "text", "text": f"Saved edited text to {output_filename} and copied to clipboard"}]
+                return [{"type": "text", "text": f"Saved edited text to {filename} and copied to clipboard"}]
             
             elif name == "wait_for_files":
                 timeout = arguments.get("timeout", 30) if arguments else 30

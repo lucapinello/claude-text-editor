@@ -111,7 +111,7 @@ else
     
     # Install dependencies
     echo "Installing dependencies..."
-    pip install mcp watchdog
+    pip install mcp
 fi
 
 # Create MCP server wrapper for the appropriate environment

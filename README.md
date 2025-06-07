@@ -97,7 +97,7 @@ cat ~/.claude_text_editor/outbox/test.txt
 ### Basic Workflow
 
 1. **Keep Claude Desktop open** with the `claude_text_editor` chat active
-2. **Use the keyboard shortcut** (⌘⇧E) on any selected text, or drop files in `~/.claude_text_editor/inbox/`
+2. **Use the keyboard shortcut** (⌥⌘.) on any selected text, or drop files in `~/.claude_text_editor/inbox/`
 3. **Claude processes automatically** and saves results to `~/.claude_text_editor/outbox/`
 4. **Get instant feedback**:
    - Desktop notification appears (requires Homebrew + terminal-notifier)
@@ -162,9 +162,9 @@ The install script sets up the necessary files. To enable the keyboard shortcut:
 
 1. System Settings → Keyboard → Keyboard Shortcuts → Services
 2. Find "Edit with Claude" under "Text"
-3. Add shortcut: ⌘⇧E (or your preference)
+3. Add shortcut: ⌥⌘. (Option+Command+Period)
 
-Now you can select text anywhere → ⌘⇧E → Claude processes it → Find result in `~/.claude_text_editor/outbox/`
+Now you can select text anywhere → ⌥⌘. → Claude processes it → Result is copied to clipboard!
 
 ## Architecture
 
