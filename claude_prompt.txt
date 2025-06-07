@@ -1,0 +1,8 @@
+Process the following text according to these instructions:
+
+1. Fix any grammar or spelling errors
+2. Improve clarity and conciseness
+3. Maintain the original tone and intent
+4. Return only the processed text without explanations
+
+Text to process:
