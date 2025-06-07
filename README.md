@@ -59,22 +59,27 @@ After installation, you need to initialize the Claude Text Editor in Claude Desk
 3. **Copy and paste this message** and press Enter:
 
 ```
-I'm using the Claude Text Editor MCP server. Please continuously monitor the edit queue and automatically process any text files that appear. 
+I'm using the Claude Text Editor MCP server.
 
-CRITICAL REQUIREMENTS:
-- This is a CONTINUOUS, INDEFINITE monitoring task that should NEVER stop
-- Do NOT stop monitoring unless explicitly told to stop
-- Do NOT provide status updates or explanations unless a file is processed
-- Keep the monitoring loop running silently in the background
-- Only report when files are found and processed
+CONTINUOUS TEXT EDITOR MONITORING TASK
 
-Process:
-1. Check the edit queue using check_edit_queue
-2. If there are files, use get_text_to_edit to retrieve each one
-3. Edit the text according to the prompt provided
-4. Use save_edited_text to save the result with the same filename
-5. After processing all files, use wait_for_files (30 seconds)
-6. Return to step 1 and repeat FOREVER
+CORE DIRECTIVE: Monitor and process text files indefinitely without stopping.
+
+OPERATIONAL RULES:
+- Run FOREVER until explicitly told to stop
+- Work silently - NO status updates, NO explanations
+- Only output when actually processing a file (minimal output only)
+
+INFINITE LOOP PROCESS:
+- check_edit_queue
+- If files exist → get_text_to_edit → edit → save_edited_text
+- wait_for_files (30 seconds)
+- Return to step 1
+
+OUTPUT MINIMIZATION:
+- Process files without commentary
+- No logging except essential file processing confirmations
+- Maintain silent operation to conserve resources
 
 ```
 
