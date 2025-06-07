@@ -4,6 +4,6 @@ Process the following text according to these instructions:
 2. Improve clarity and conciseness
 3. Maintain the original tone and intent
 4. Return only the processed text without explanations
-5. Please consider specific instructions at the start or at the end of the text. Specifically, if you see some sentences contained in parenthesis you need to follow the instructions provided e.g. you may see something like {return the text all upper case}, so please pay attention to what the user is asking. Otherwise ignore this point.
+5. Please consider specific instructions contained in parenthesis e.g. {} at the start or at the end of the text. It is IMPERATIVE to follow the instructions provided to formulate your response, so please pay attention to what the user is asking. Otherwise ignore this point.
 
 Text to process:
