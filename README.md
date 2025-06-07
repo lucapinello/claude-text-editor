@@ -130,7 +130,13 @@ Text to edit:
 
 The install script sets up the necessary files. To enable the keyboard shortcut:
 
-#### Create macOS Shortcut
+#### Option 1: Import Pre-made Shortcut (Easiest)
+
+1. Open **Shortcuts** app
+2. **File → Import** or drag `Edit_with_Claude.shortcut` from the project folder
+3. The shortcut is already configured and ready to use!
+
+#### Option 2: Create Shortcut Manually
 
 1. Open **Shortcuts** app
 2. Click **+** to create new shortcut
