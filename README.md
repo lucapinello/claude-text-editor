@@ -19,6 +19,9 @@ A seamless text editing system that integrates with Claude Desktop through the M
 - Claude Desktop app installed
 - Terminal access
 - Internet connection
+- Homebrew (optional but recommended for desktop notifications)
+  - Install from: https://brew.sh
+  - Or run: `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 
 ## Installation
 
@@ -38,10 +41,12 @@ The install script will:
 - Create the necessary directories
 - Set up the Python environment from `environment.yml`
 - Install dependencies (including MCP)
-- Install `terminal-notifier` for desktop notifications (via Homebrew)
+- Install `terminal-notifier` for desktop notifications (if Homebrew is installed)
 - Configure Claude Desktop
 - Copy all files to the correct locations
 - Create the default prompt file
+
+**Note**: Desktop notifications require Homebrew. Without it, you'll still get audio feedback (Glass sound) when text is processed.
 
 ## Getting Started with Claude Desktop
 
@@ -88,8 +93,8 @@ cat ~/.claude_text_editor/outbox/test.txt
 2. **Use the keyboard shortcut** (⌘⇧E) on any selected text, or drop files in `~/.claude_text_editor/inbox/`
 3. **Claude processes automatically** and saves results to `~/.claude_text_editor/outbox/`
 4. **Get instant feedback**:
-   - Desktop notification appears (via terminal-notifier)
-   - "Glass" sound plays
+   - Desktop notification appears (requires Homebrew + terminal-notifier)
+   - "Glass" sound plays (always works)
    - Text is automatically copied to clipboard
 
 ### Using the Client Script
