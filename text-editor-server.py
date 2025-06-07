@@ -97,7 +97,7 @@ class TextEditorServer:
                         prompt_text = prompt_file.read_text().strip() + "\n\n"
                     else:
                         # Use default prompt if file doesn't exist
-                        prompt_text = "Process the following text according to these instructions:\n\n1. Fix any grammar or spelling errors\n2. Improve clarity and conciseness\n3. Maintain the original tone and intent\n4. Return only the processed text without explanations\n5. Please consider specific instructions at the start of the end if you see some sentences contained in parenthesis e.g. {return the text all upper case}. Otherwise ignore this point.\n\nText to process:\n\n"
+                        prompt_text = "Process the following text according to these instructions:\n\n1. Fix any grammar or spelling errors\n2. Improve clarity and conciseness\n3. Maintain the original tone and intent\n4. Return only the processed text without explanations\n5. Please consider specific instructions at the start or at the end of the selected text. Specifically, if you see some sentences contained in parenthesis e.g. {return the text all upper case}. Otherwise ignore this point.\n\nText to process:\n\n"
                     
                     return [{"type": "text", "text": f"FILE:{file.name}\n{prompt_text}{content}"}]
                 return [{"type": "text", "text": "No files in queue"}]
