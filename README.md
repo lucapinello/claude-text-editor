@@ -483,14 +483,61 @@ Please edit the following text to:
 Text to edit:
 ```
 
-### Creating a macOS Service (Coming Soon)
+### Creating a macOS Service for System-Wide Text Editing
 
-You can create a system-wide service to edit selected text:
-1. Open Automator
-2. Create a new "Quick Action"
-3. Set it to receive text in any application
-4. Add a "Run Shell Script" action
-5. Use the client script to process the selected text
+#### Step 1: Create the Shortcut Script
+
+Create `~/claude-text-editor/claude_text_shortcut.sh`:
+
+```bash
+#!/bin/bash
+# Read input text
+INPUT=$(cat)
+
+# Generate timestamp for unique filename
+TIMESTAMP=$(date +%Y%m%d_%H%M%S_%N)
+FILENAME="text_${TIMESTAMP}.txt"
+
+# Write to inbox
+echo "$INPUT" > "$HOME/.claude_text_editor/inbox/$FILENAME"
+
+# Notify user
+osascript -e 'display notification "Text sent to Claude for editing" with title "Claude Text Editor"'
+```
+
+Make it executable:
+```bash
+chmod +x ~/claude-text-editor/claude_text_shortcut.sh
+```
+
+#### Step 2: Create macOS Shortcut
+
+1. Open **Shortcuts** app
+2. Click **+** to create new shortcut
+3. Add these actions:
+   - **Receive Text**: From "Quick Actions"
+   - **Run Shell Script**: 
+     - Shell: `/bin/bash`
+     - Pass Input: "to stdin"
+     - Script: `~/claude-text-editor/claude_text_shortcut.sh`
+4. Settings (⚙️):
+   - ✅ Use as Quick Action
+   - ✅ Services Menu
+   - Name: "Edit with Claude"
+
+#### Step 3: Add Keyboard Shortcut
+
+1. System Settings → Keyboard → Keyboard Shortcuts → Services
+2. Find "Edit with Claude" under "Text"
+3. Add shortcut: ⌘⇧E (or your preference)
+
+#### Step 4: Start Monitoring in Claude Desktop
+
+1. Open Claude Desktop
+2. Create/open a chat
+3. Type: `Please check the edit queue and process any waiting files`
+
+Now you can select text anywhere → ⌘⇧E → Claude processes it → Find result in `~/.claude_text_editor/outbox/`
 
 ## Architecture
 
