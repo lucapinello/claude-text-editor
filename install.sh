@@ -56,6 +56,11 @@ echo "Copying files..."
 cp "$SCRIPT_DIR/text-editor-server.py" ~/claude-text-editor/
 cp "$SCRIPT_DIR/claude_text_client.py" ~/claude-text-editor/
 cp "$SCRIPT_DIR/claude_text_shortcut.sh" ~/claude-text-editor/
+cp "$SCRIPT_DIR/environment.yml" ~/claude-text-editor/
+if [ -f "$SCRIPT_DIR/notify.sh" ]; then
+    cp "$SCRIPT_DIR/notify.sh" ~/claude-text-editor/
+    chmod +x ~/claude-text-editor/notify.sh
+fi
 chmod +x ~/claude-text-editor/claude_text_client.py
 chmod +x ~/claude-text-editor/claude_text_shortcut.sh
 
@@ -81,19 +86,17 @@ if [ "$USE_CONDA" = true ]; then
     # Check if environment already exists
     if $CONDA_CMD env list | grep -q "claude-text-editor"; then
         echo "Environment claude-text-editor already exists"
+        echo "Updating environment from environment.yml..."
+        $CONDA_CMD env update -f "$SCRIPT_DIR/environment.yml" --prune
     else
-        # Create conda environment
-        echo "Creating conda environment..."
-        $CONDA_CMD create -n claude-text-editor python=3.11 pip -y
+        # Create conda environment from environment.yml
+        echo "Creating conda environment from environment.yml..."
+        $CONDA_CMD env create -f "$SCRIPT_DIR/environment.yml"
     fi
     
     # Activate conda environment
     eval "$($CONDA_CMD shell.bash hook)"
     $CONDA_CMD activate claude-text-editor
-    
-    # Install dependencies
-    echo "Installing dependencies..."
-    pip install mcp
 else
     # Create virtual environment
     if [ ! -d "venv" ]; then
@@ -107,7 +110,7 @@ else
     
     # Install dependencies
     echo "Installing dependencies..."
-    pip install mcp
+    pip install mcp watchdog
 fi
 
 # Create MCP server wrapper for the appropriate environment

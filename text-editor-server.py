@@ -6,7 +6,10 @@ Minimal MCP Server for Claude Text Editor
 import asyncio
 import json
 import sys
+import subprocess
+import time
 from pathlib import Path
+from datetime import datetime
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 
@@ -56,6 +59,17 @@ class TextEditorServer:
                         },
                         "required": ["filename", "content"]
                     }
+                },
+                {
+                    "name": "wait_for_files",
+                    "description": "Wait up to 30 seconds for new files to appear",
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {
+                            "timeout": {"type": "number", "description": "Seconds to wait (default 30)"}
+                        },
+                        "required": []
+                    }
                 }
             ]
         
@@ -71,11 +85,21 @@ class TextEditorServer:
             
             elif name == "get_text_to_edit":
                 inbox = Path.home() / ".claude_text_editor" / "inbox"
+                prompt_file = Path.home() / ".claude_text_editor" / "claude_prompt.txt"
                 files = list(inbox.glob("*.txt"))
                 if files:
                     file = files[0]
                     content = file.read_text()
-                    return [{"type": "text", "text": f"FILE:{file.name}\n{content}"}]
+                    
+                    # Read the prompt if it exists
+                    prompt_text = ""
+                    if prompt_file.exists():
+                        prompt_text = prompt_file.read_text().strip() + "\n\n"
+                    else:
+                        # Use default prompt if file doesn't exist
+                        prompt_text = "Process the following text according to these instructions:\n\n1. Fix any grammar or spelling errors\n2. Improve clarity and conciseness\n3. Maintain the original tone and intent\n4. Return only the processed text without explanations\n\nText to process:\n\n"
+                    
+                    return [{"type": "text", "text": f"FILE:{file.name}\n{prompt_text}{content}"}]
                 return [{"type": "text", "text": "No files in queue"}]
             
             elif name == "save_edited_text":
@@ -83,16 +107,61 @@ class TextEditorServer:
                 outbox.mkdir(parents=True, exist_ok=True)
                 filename = arguments.get("filename", "output.txt")
                 content = arguments.get("content", "")
-                output_path = outbox / filename
+                
+                # Generate output filename with timestamp
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                base_name = filename.rsplit('.', 1)[0]
+                ext = filename.rsplit('.', 1)[1] if '.' in filename else 'txt'
+                output_filename = f"{base_name}_{timestamp}.{ext}"
+                output_path = outbox / output_filename
+                
+                # Save the file
                 output_path.write_text(content)
+                
+                # Copy to clipboard
+                try:
+                    process = subprocess.Popen(['pbcopy'], stdin=subprocess.PIPE)
+                    process.communicate(content.encode('utf-8'))
+                    debug_log("Copied to clipboard")
+                except Exception as e:
+                    debug_log(f"Failed to copy to clipboard: {e}")
+                
+                # Send audio feedback (most reliable)
+                try:
+                    # Play system sound as primary feedback
+                    subprocess.run(['afplay', '/System/Library/Sounds/Glass.aiff'], check=False)
+                    debug_log("Played completion sound")
+                    
+                    # Also try visual notification (might work for some users)
+                    subprocess.run([
+                        'osascript', '-e',
+                        'display notification "Result copied to clipboard!" with title "Claude Text Editor" sound name "Glass"'
+                    ], check=False)
+                except Exception as e:
+                    debug_log(f"Failed to send feedback: {e}")
                 
                 # Remove original from inbox
                 inbox = Path.home() / ".claude_text_editor" / "inbox"
                 original = inbox / filename
                 if original.exists():
                     original.unlink()
+                    debug_log(f"Removed processed file: {filename}")
                 
-                return [{"type": "text", "text": f"Saved edited text to {filename}"}]
+                return [{"type": "text", "text": f"Saved edited text to {output_filename} and copied to clipboard"}]
+            
+            elif name == "wait_for_files":
+                timeout = arguments.get("timeout", 30) if arguments else 30
+                inbox = Path.home() / ".claude_text_editor" / "inbox"
+                inbox.mkdir(parents=True, exist_ok=True)
+                
+                start_time = time.time()
+                while time.time() - start_time < timeout:
+                    files = list(inbox.glob("*.txt"))
+                    if files:
+                        return [{"type": "text", "text": f"Files detected! Found {len(files)} files."}]
+                    await asyncio.sleep(1)
+                
+                return [{"type": "text", "text": "No files appeared within timeout period"}]
             
             return [{"type": "text", "text": f"Unknown tool: {name}"}]
     

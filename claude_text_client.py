@@ -50,28 +50,25 @@ class ClaudeTextClient:
             logger.error(f"Failed to write input file: {e}")
             return f"Error: Failed to write input file: {e}"
         
-        # Expected response file pattern
-        response_pattern = f"response_text_{timestamp}_*.txt"
+        # Expected response filename (same as input)
+        response_filename = input_filename
+        response_path = self.outbox_dir / response_filename
         
         # Wait for response
         logger.info("Waiting for Claude to process...")
         start_time = time.time()
         
         while time.time() - start_time < timeout:
-            # Check for response files
-            response_files = list(self.outbox_dir.glob(response_pattern))
-            
-            if response_files:
-                # Found response file
-                response_file = response_files[0]
-                logger.info(f"Found response: {response_file}")
+            # Check if response file exists
+            if response_path.exists():
+                logger.info(f"Found response: {response_path}")
                 
                 try:
                     # Read response
-                    response_text = response_file.read_text()
+                    response_text = response_path.read_text()
                     
                     # Clean up response file
-                    response_file.unlink()
+                    response_path.unlink()
                     logger.info("Response file cleaned up")
                     
                     return response_text

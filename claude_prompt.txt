@@ -4,5 +4,6 @@ Process the following text according to these instructions:
 2. Improve clarity and conciseness
 3. Maintain the original tone and intent
 4. Return only the processed text without explanations
+5. Please consider specific instructions at the end if you see at the end some sentences containes in parenthesis e.g. {return the text all upper case}. Otherwise ignore this point.
 
 Text to process:
