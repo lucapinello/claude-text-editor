@@ -9,6 +9,8 @@ A seamless text editing system that integrates with Claude Desktop through the M
 - 🔄 **Automatic queue management**: Drop files in inbox, get results in outbox
 - 🎯 **Customizable prompts**: Define your editing instructions in `claude_prompt.txt`
 - 🖥️ **System-wide integration**: Works with any macOS application
+- 🔔 **Desktop notifications**: Get notified when text processing is complete
+- 📋 **Auto-clipboard**: Edited text is automatically copied to your clipboard
 - 🤖 **MCP-powered**: Native integration with Claude Desktop
 
 ## Prerequisites
@@ -34,8 +36,9 @@ cd claude-text-editor
 The install script will:
 - Check for Python/conda/mamba
 - Create the necessary directories
-- Set up the Python environment
-- Install dependencies
+- Set up the Python environment from `environment.yml`
+- Install dependencies (including MCP)
+- Install `terminal-notifier` for desktop notifications (via Homebrew)
 - Configure Claude Desktop
 - Copy all files to the correct locations
 - Create the default prompt file
@@ -84,7 +87,10 @@ cat ~/.claude_text_editor/outbox/test.txt
 1. **Keep Claude Desktop open** with the `claude_text_editor` chat active
 2. **Use the keyboard shortcut** (⌘⇧E) on any selected text, or drop files in `~/.claude_text_editor/inbox/`
 3. **Claude processes automatically** and saves results to `~/.claude_text_editor/outbox/`
-4. **Listen for the completion sound** - A "Glass" sound plays when text is processed and copied to clipboard
+4. **Get instant feedback**:
+   - Desktop notification appears (via terminal-notifier)
+   - "Glass" sound plays
+   - Text is automatically copied to clipboard
 
 ### Using the Client Script
 

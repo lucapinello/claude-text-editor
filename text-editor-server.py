@@ -126,17 +126,17 @@ class TextEditorServer:
                 except Exception as e:
                     debug_log(f"Failed to copy to clipboard: {e}")
                 
-                # Send audio feedback (most reliable)
+                # Send notification and audio feedback
                 try:
-                    # Play system sound as primary feedback
-                    subprocess.run(['afplay', '/System/Library/Sounds/Glass.aiff'], check=False)
-                    debug_log("Played completion sound")
-                    
-                    # Also try visual notification (might work for some users)
-                    subprocess.run([
-                        'osascript', '-e',
-                        'display notification "Result copied to clipboard!" with title "Claude Text Editor" sound name "Glass"'
-                    ], check=False)
+                    # Use our notification script if it exists
+                    notify_script = Path.home() / "claude-text-editor" / "send_notification.sh"
+                    if notify_script.exists():
+                        subprocess.run([str(notify_script), "Claude Text Editor", "Text edited and copied to clipboard!"], check=False)
+                        debug_log("Sent notification via script")
+                    else:
+                        # Fallback: just play sound
+                        subprocess.run(['afplay', '/System/Library/Sounds/Glass.aiff'], check=False)
+                        debug_log("Played completion sound")
                 except Exception as e:
                     debug_log(f"Failed to send feedback: {e}")
                 

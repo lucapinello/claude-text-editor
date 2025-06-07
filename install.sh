@@ -57,9 +57,9 @@ cp "$SCRIPT_DIR/text-editor-server.py" ~/claude-text-editor/
 cp "$SCRIPT_DIR/claude_text_client.py" ~/claude-text-editor/
 cp "$SCRIPT_DIR/claude_text_shortcut.sh" ~/claude-text-editor/
 cp "$SCRIPT_DIR/environment.yml" ~/claude-text-editor/
-if [ -f "$SCRIPT_DIR/notify.sh" ]; then
-    cp "$SCRIPT_DIR/notify.sh" ~/claude-text-editor/
-    chmod +x ~/claude-text-editor/notify.sh
+if [ -f "$SCRIPT_DIR/send_notification.sh" ]; then
+    cp "$SCRIPT_DIR/send_notification.sh" ~/claude-text-editor/
+    chmod +x ~/claude-text-editor/send_notification.sh
 fi
 chmod +x ~/claude-text-editor/claude_text_client.py
 chmod +x ~/claude-text-editor/claude_text_shortcut.sh
@@ -171,6 +171,24 @@ rm -rf ~/.claude-text-editor 2>/dev/null  # Remove old dot directory
 echo ""
 echo "✅ Installation complete!"
 echo ""
+
+# Install terminal-notifier for notifications
+echo "Checking for terminal-notifier..."
+if ! command -v terminal-notifier &> /dev/null; then
+    if command -v brew &> /dev/null; then
+        echo "Installing terminal-notifier for desktop notifications..."
+        brew install terminal-notifier
+        echo "✓ terminal-notifier installed successfully"
+    else
+        echo "Note: Homebrew not found. For desktop notifications, install terminal-notifier:"
+        echo "  1. Install Homebrew: /bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+        echo "  2. Then run: brew install terminal-notifier"
+        echo "  (The app will still work with audio feedback only)"
+    fi
+else
+    echo "✓ terminal-notifier is already installed"
+fi
+
 echo "Next steps:"
 echo "1. Restart Claude Desktop app"
 echo "2. In Claude Desktop, ask Claude to 'check the edit queue and process any waiting files'"
