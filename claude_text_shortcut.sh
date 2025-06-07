@@ -22,14 +22,8 @@ if [ -z "$SELECTED_TEXT" ]; then
     exit 1
 fi
 
-# Change to script directory
-cd "$SCRIPT_DIR"
-
-# Make sure the client script is executable
-chmod +x claude_text_client.py
-
-# Process the text
-echo "$SELECTED_TEXT" | python3 claude_text_client.py
+# Process the text using the installed client
+echo "$SELECTED_TEXT" | ~/claude-text-editor/claude_text_client.py
 
 # Exit with the same code as the client
 exit $?

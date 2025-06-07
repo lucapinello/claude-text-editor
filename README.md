@@ -20,7 +20,30 @@ A seamless text editing system that integrates with Claude Desktop through the M
 
 ## Installation
 
-### Step 1: Install Miniforge (Python Environment Manager)
+### Quick Install (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/lucapinello/claude-text-editor.git
+cd claude-text-editor
+
+# Run the install script
+./install.sh
+```
+
+The install script will:
+- Check for Python/conda/mamba
+- Create the necessary directories
+- Set up the Python environment
+- Install dependencies
+- Configure Claude Desktop
+- Copy all files to the correct locations
+
+### Manual Installation
+
+If you prefer to install manually or the script doesn't work for your setup:
+
+#### Step 1: Install Miniforge (Python Environment Manager)
 
 ```bash
 # Download and install Miniforge
