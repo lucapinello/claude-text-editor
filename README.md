@@ -166,8 +166,6 @@ The install script sets up the necessary files. To enable the keyboard shortcut:
 
 Now you can select text anywhere → ⌥⌘. → Claude processes it → Result is copied to clipboard!
 
-**Note for Web Apps (Google Docs, Gmail, etc.):** These apps override system shortcuts. See [Google Docs Workflow](#google-docs-and-web-apps) below.
-
 ## Architecture
 
 The system consists of several components:
@@ -182,41 +180,6 @@ The system consists of several components:
 ```
 User Input → inbox/ → Claude processes → outbox/ → User receives output
 ```
-
-## Google Docs and Web Apps
-
-Web applications like Google Docs override system shortcuts. Here are alternative workflows:
-
-### Quick Solution: Copy-Paste Workflow
-
-1. **Select text** in Google Docs
-2. **Copy** (⌘C)
-3. **Open Terminal** and run:
-   ```bash
-   pbpaste | ~/claude-text-editor/claude_text_client.py
-   ```
-4. **Paste** (⌘V) the result back
-
-### Create a Shell Alias (Recommended)
-
-Add to your `~/.zshrc` or `~/.bash_profile`:
-```bash
-alias ce='pbpaste | ~/claude-text-editor/claude_text_client.py'
-```
-
-Now you can just:
-1. Copy text in Google Docs (⌘C)
-2. Type `ce` in Terminal
-3. Paste result back (⌘V)
-
-### Menu Bar App (Optional)
-
-For a GUI solution, run:
-```bash
-python3 ~/claude-text-editor/claude-menubar.py
-```
-
-This adds a 📝 icon to your menu bar with "Edit Clipboard Text" option.
 
 ## Troubleshooting
 
