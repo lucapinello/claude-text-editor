@@ -205,6 +205,21 @@ chmod +x ~/claude-text-editor/claude_text_client.py
 2. Verify the environment is activated: `conda activate claude-text-editor`
 3. Check that MCP is installed: `pip list | grep mcp`
 
+## Uninstallation
+
+To completely remove Claude Text Editor from your system:
+
+```bash
+./uninstall.sh
+```
+
+The uninstall script will:
+- Remove the installation directory
+- Delete the conda environment (if used)
+- Clean up Claude Desktop configuration
+- Optionally remove data directories
+- Provide instructions for manual cleanup of shortcuts
+
 ## Development
 
 ### Project Structure
