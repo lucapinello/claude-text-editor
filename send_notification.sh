@@ -10,12 +10,15 @@ if command -v terminal-notifier &> /dev/null; then
     exit 0
 fi
 
-# Method 2: Use osascript with an app context that might trigger permission
-osascript <<EOF
-tell application id "com.apple.SystemEvents"
-    display notification "$MESSAGE" with title "$TITLE" sound name "Glass"
-end tell
-EOF
+# Method 2: Use osascript with proper escaping
+# Use -e with separate arguments to avoid injection
+osascript \
+    -e 'on run argv' \
+    -e '    tell application id "com.apple.SystemEvents"' \
+    -e '        display notification (item 2 of argv) with title (item 1 of argv) sound name "Glass"' \
+    -e '    end tell' \
+    -e 'end run' \
+    -- "$TITLE" "$MESSAGE"
 
 # Also play sound as feedback
 afplay /System/Library/Sounds/Glass.aiff 2>/dev/null || true

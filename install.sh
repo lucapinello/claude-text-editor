@@ -144,22 +144,62 @@ CLAUDE_CONFIG_FILE="$CLAUDE_CONFIG_DIR/claude_desktop_config.json"
 
 mkdir -p "$CLAUDE_CONFIG_DIR"
 
+# Create a Python script to safely merge the config
+cat > /tmp/merge_claude_config.py << 'PYTHON_SCRIPT'
+import json
+import sys
+import os
+
+config_file = sys.argv[1]
+home_dir = os.path.expanduser("~")
+
+new_server = {
+    "text-editor": {
+        "command": "/bin/bash",
+        "args": [f"{home_dir}/claude-text-editor/mcp-server-wrapper.sh"]
+    }
+}
+
+# Load existing config or create new one
+config = {}
+if os.path.exists(config_file):
+    try:
+        with open(config_file, 'r') as f:
+            config = json.load(f)
+    except:
+        # If config is corrupted, start fresh but backup first
+        import shutil
+        backup_name = f"{config_file}.backup.corrupted"
+        shutil.copy(config_file, backup_name)
+        print(f"Corrupted config backed up to {backup_name}")
+        config = {}
+
+# Ensure mcpServers exists
+if "mcpServers" not in config:
+    config["mcpServers"] = {}
+
+# Add or update our server
+config["mcpServers"].update(new_server)
+
+# Write the merged config
+with open(config_file, 'w') as f:
+    json.dump(config, f, indent=2)
+
+print("Successfully updated Claude config")
+PYTHON_SCRIPT
+
+# Backup existing config if it exists
 if [ -f "$CLAUDE_CONFIG_FILE" ]; then
     echo "Backing up existing Claude config..."
     cp "$CLAUDE_CONFIG_FILE" "$CLAUDE_CONFIG_FILE.backup.$(date +%Y%m%d_%H%M%S)"
 fi
 
-# Create or update Claude config
-cat > "$CLAUDE_CONFIG_FILE" << EOL
-{
-  "mcpServers": {
-    "text-editor": {
-      "command": "/bin/bash",
-      "args": ["${HOME}/claude-text-editor/mcp-server-wrapper.sh"]
-    }
-  }
-}
-EOL
+# Run the merge script
+echo "Updating Claude Desktop configuration..."
+python3 /tmp/merge_claude_config.py "$CLAUDE_CONFIG_FILE"
+
+# Clean up temp script
+rm -f /tmp/merge_claude_config.py
 
 # Clean up old files if they exist
 echo "Cleaning up old files..."
