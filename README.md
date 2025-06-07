@@ -102,7 +102,9 @@ cat ~/.claude_text_editor/outbox/test.txt
 ### Basic Workflow
 
 1. **Keep Claude Desktop open** with the `claude_text_editor` chat active
-2. **Use the keyboard shortcut** (⌥⌘.) on any selected text, or drop files in `~/.claude_text_editor/inbox/`
+2. **Use the keyboard shortcut** (⌥⌘.):
+   - With selected text: processes the selection
+   - Without selection: processes clipboard contents
 3. **Claude processes automatically** and saves results to `~/.claude_text_editor/outbox/`
 4. **Get instant feedback**:
    - Desktop notification appears (requires Homebrew + terminal-notifier)
@@ -124,6 +126,33 @@ echo "Edit this text" | ~/claude-text-editor/claude_text_client.py --timeout 60
 # Edit without copying to clipboard
 echo "Edit this text" | ~/claude-text-editor/claude_text_client.py --no-clipboard
 ```
+
+### Quick Command Line Function
+
+Add this to your `~/.zshrc` or `~/.bashrc` for instant text editing:
+
+```bash
+ce() {
+    if [ $# -eq 0 ]; then
+        # No arguments: use clipboard
+        pbpaste | ~/claude-text-editor/claude_text_client.py
+    else
+        # Arguments provided: pipe them through the client
+        printf '%s\n' "$*" | ~/claude-text-editor/claude_text_client.py
+    fi
+}
+```
+
+Now you can quickly edit text from anywhere:
+```bash
+# Edit clipboard contents
+ce
+
+# Edit typed text directly
+ce Fix this sentence that have bad grammer
+```
+
+Both methods use the full client workflow with notifications and clipboard integration!
 
 ### Customizing Edit Instructions
 
@@ -169,7 +198,9 @@ The install script sets up the necessary files. To enable the keyboard shortcut:
 2. Find "Edit with Claude" under "Text"
 3. Add shortcut: ⌥⌘. (Option+Command+Period)
 
-Now you can select text anywhere → ⌥⌘. → Claude processes it → Result is copied to clipboard!
+Now you can:
+- **Select text** → ⌥⌘. → Claude processes it → Result is copied to clipboard!
+- **No selection** → ⌥⌘. → Claude processes clipboard contents → Result is copied to clipboard!
 
 ## Architecture
 
